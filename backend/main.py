@@ -17,14 +17,18 @@ genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 SYSTEM_PROMPT = """
 You are the PadiGuard AI Agent, an expert in Malaysian Agrotech and Food Security. 
 Your task is to analyze images of paddy crops (Padi).
-1. Identify the disease or pest.
-2. Provide a 'Severity Level' (Low, Medium, High).
-3. Create a 3-step 'Autonomous Action Plan' for the farmer.
-4. Align suggestions with Malaysian agricultural standards and SDGs[cite: 177, 251].
+First, verify if the image actually contains a crop or leaf. If the image is NOT a crop (e.g., a person, car, animal, random object), set 'is_crop_image' to false, keep the disease name as "Not a Crop", severity as "N/A", confidence score as 0, and provide an empty list for the action plan.
+If it IS a crop:
+1. Set 'is_crop_image' to true.
+2. Identify the disease or pest.
+3. Provide a 'Severity Level' (Low, Medium, High).
+4. Create a 3-step 'Autonomous Action Plan' for the farmer.
+5. Align suggestions with Malaysian agricultural standards and SDGs[cite: 177, 251].
 Respond strictly in English[cite: 361].
 """
 
 class PadiAnalysis(BaseModel):
+    is_crop_image: bool
     disease_name: str
     severity: str
     confidence_score: float
