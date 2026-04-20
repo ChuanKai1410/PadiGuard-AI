@@ -9,7 +9,7 @@
     <style>
         body {
             font-family: 'Outfit', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background: linear-gradient(135deg, #18241e 0%, #131b14 100%);
             color: #f8fafc;
             min-height: 100vh;
         }
@@ -68,44 +68,44 @@
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
-<body class="p-6 md:p-12 flex flex-col items-center">
+<body class="p-6 md:p-12 flex flex-col items-center text-base md:text-lg">
     
     <header class="w-full max-w-5xl flex justify-between items-center mb-10 fade-in">
         <div>
-            <h1 class="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-600">PadiGuard AI</h1>
-            <p class="text-slate-400 mt-2">Malaysian Agrotech & Food Security Expert</p>
+            <h1 class="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-green-500 tracking-tight">PadiGuard AI</h1>
+            <p class="text-stone-300 font-medium mt-2">Malaysian Agrotech & Food Security Expert</p>
         </div>
-        <div class="h-12 w-12 rounded-full bg-gradient-to-tr from-green-400 to-emerald-600 animate-pulse-glow flex items-center justify-center">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+        <div class="h-14 w-14 rounded-full bg-gradient-to-tr from-green-500 to-emerald-600 shadow-[0_0_20px_rgba(16,185,129,0.4)] flex items-center justify-center">
+            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
         </div>
     </header>
 
     <main class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Upload Section -->
         <section class="glass-panel p-6 md:p-8 flex flex-col h-full fade-in" style="animation-delay: 0.1s;">
-            <h2 class="text-xl md:text-2xl font-semibold mb-6 flex items-center gap-2">
-                <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-2 text-white">
+                <svg class="w-7 h-7 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                 Image Analysis
             </h2>
             
-            <div id="drop-zone" class="border-2 border-dashed border-slate-600 rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-green-400 transition-colors bg-slate-800/50 flex-grow min-h-[250px] relative overflow-hidden group">
-                <input type="file" id="file-upload" class="hidden" accept="image/*" />
+            <div id="drop-zone" tabindex="0" aria-label="Upload crop image" class="border-[3px] border-dashed border-stone-500 focus-within:ring-4 focus-within:ring-emerald-400/50 focus:outline-none focus:border-emerald-400 rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-emerald-400 hover:bg-stone-800/80 transition-all min-h-[250px] relative overflow-hidden group bg-stone-900/60 flex-grow">
+                <input type="file" id="file-upload" class="hidden" accept="image/*" tabindex="-1" />
                 <div id="upload-content" class="flex flex-col items-center w-full transition-opacity duration-300">
-                    <svg class="w-12 h-12 text-slate-400 group-hover:text-green-400 transition-colors mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                    <p class="text-lg font-medium text-slate-300">Click or drag image to upload</p>
-                    <p class="text-sm text-slate-500 mt-2">Supports JPG, PNG</p>
+                    <svg class="w-14 h-14 text-stone-400 group-hover:text-emerald-400 transition-colors mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                    <p class="text-xl font-bold text-stone-100">Click or Drag Image to Upload</p>
+                    <p class="text-stone-300 mt-2 font-medium">Supports JPG, PNG</p>
                 </div>
                 <!-- Image Preview gets absolute position to cover background while keeping interactions -->
-                <img id="image-preview" class="absolute inset-0 w-full h-full object-cover opacity-0 pointer-events-none transition-opacity duration-300" />
+                <img id="image-preview" alt="Uploaded Preview" class="absolute inset-0 w-full h-full object-cover opacity-0 pointer-events-none transition-opacity duration-300" />
             </div>
 
-            <div class="mt-6 flex flex-col gap-4">
+            <div class="mt-8 flex flex-col gap-4">
                 <div>
-                    <label class="block text-sm text-slate-400 mb-2">Analysis Prompt</label>
-                    <textarea id="prompt-input" rows="3" class="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-sm text-slate-200 focus:outline-none focus:border-green-500 transition-colors resize-none">Act as a Malaysian Agrotech expert. Identify the disease in this Padi leaf and provide a 3-step action plan using local Malaysian safety standards.</textarea>
+                    <label for="prompt-input" class="block font-bold text-stone-200 mb-2">Analysis Prompt</label>
+                    <textarea id="prompt-input" rows="3" aria-label="Analysis prompt" class="w-full bg-stone-900/80 border-2 border-stone-600 rounded-lg p-4 text-white focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all resize-none shadow-inner">Act as a Malaysian Agrotech expert. Identify the disease in this Padi leaf and provide a 3-step action plan using local Malaysian safety standards.</textarea>
                 </div>
                 
-                <button id="analyze-btn" disabled class="w-full py-4 rounded-xl bg-slate-700 text-slate-400 font-semibold transition-all duration-300 flex items-center justify-center gap-2 cursor-not-allowed">
+                <button id="analyze-btn" disabled aria-disabled="true" class="mt-2 w-full py-4 text-xl rounded-xl bg-stone-800 text-stone-400 font-bold border-2 border-stone-700 transition-all duration-300 flex items-center justify-center gap-2 cursor-not-allowed uppercase tracking-wide">
                     <span>Analyze Image</span>
                 </button>
             </div>
@@ -113,24 +113,25 @@
 
         <!-- Results Section -->
         <section class="glass-panel p-6 md:p-8 flex flex-col h-[600px] fade-in" style="animation-delay: 0.2s;">
-            <h2 class="text-xl md:text-2xl font-semibold mb-6 flex items-center gap-2">
-                <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-2 text-white">
+                <svg class="w-7 h-7 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                 Results Dashboard
             </h2>
             
-            <div id="results-container" class="flex-grow overflow-y-auto bg-slate-800/30 rounded-xl border border-slate-700/50 p-6 relative">
+            <div id="results-container" class="flex-grow overflow-y-auto bg-stone-900/60 rounded-xl border-2 border-stone-700 p-8 relative">
                 
-                <div id="empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 text-center p-4">
-                    <svg class="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                    <p>Awaiting analysis... Upload an image and verify with the AI agent.</p>
+                <div id="empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-stone-300 font-medium text-center p-6">
+                    <svg class="w-16 h-16 mb-4 opacity-70 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    <p class="text-xl">Awaiting analysis...</p>
+                    <p class="text-stone-400 mt-2 text-base">Upload an image and verify with the AI agent.</p>
                 </div>
                 
-                <div id="loading-state" class="absolute inset-0 flex flex-col items-center justify-center hidden bg-slate-800/80 backdrop-blur-sm z-10 rounded-xl">
-                    <div class="w-12 h-12 border-4 border-green-500/20 border-t-green-500 rounded-full animate-spin mb-4"></div>
-                    <p class="text-green-400 font-medium animate-pulse">Analyzing with Gemini...</p>
+                <div id="loading-state" class="absolute inset-0 flex flex-col items-center justify-center hidden bg-stone-900/90 backdrop-blur-sm z-10 rounded-xl">
+                    <div class="w-14 h-14 border-[5px] border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mb-4"></div>
+                    <p class="text-emerald-400 font-bold text-xl animate-pulse">Analyzing with Gemini...</p>
                 </div>
 
-                <div id="content-state" class="hidden text-slate-300 prose prose-invert w-full max-w-none">
+                <div id="content-state" class="hidden text-white prose prose-invert prose-lg w-full max-w-none">
                     <!-- Markdown output goes here -->
                 </div>
             </div>
@@ -193,8 +194,8 @@
                 
                 // Enable Button
                 analyzeBtn.disabled = false;
-                analyzeBtn.classList.remove('bg-slate-700', 'text-slate-400', 'cursor-not-allowed');
-                analyzeBtn.classList.add('bg-gradient-to-r', 'from-green-500', 'to-emerald-600', 'text-white', 'hover:shadow-lg', 'hover:shadow-green-500/30', 'cursor-pointer');
+                analyzeBtn.setAttribute('aria-disabled', 'false');
+                analyzeBtn.className = 'mt-2 w-full py-4 text-xl rounded-xl bg-emerald-600 text-white font-bold border-2 border-emerald-600 hover:bg-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-400/50 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wide shadow-lg shadow-emerald-900/50';
             };
             reader.readAsDataURL(file);
         }
@@ -207,7 +208,8 @@
             contentState.classList.add('hidden');
             loadingState.classList.remove('hidden');
             analyzeBtn.disabled = true;
-            analyzeBtn.innerHTML = `<div class="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div> Processing...`;
+            analyzeBtn.setAttribute('aria-disabled', 'true');
+            analyzeBtn.innerHTML = `<div class="w-6 h-6 border-[3px] border-white/30 border-t-white rounded-full animate-spin"></div> <span>Processing...</span>`;
             
             try {
                 const response = await fetch('http://127.0.0.1:8000/analyze_base64', {
@@ -245,6 +247,7 @@
                 
                 // Reset Button
                 analyzeBtn.disabled = false;
+                analyzeBtn.setAttribute('aria-disabled', 'false');
                 analyzeBtn.innerHTML = `<span>Analyze Image</span>`;
             }
         });
