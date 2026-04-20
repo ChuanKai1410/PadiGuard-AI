@@ -33,7 +33,7 @@ Your task is to analyze images of paddy crops (Padi).
 4. Align suggestions with Malaysian agricultural standards and SDGs[cite: 177, 251].
 Respond entirely and strictly in the language requested by the user prompt.
 
-CRITICAL RULE: If the uploaded image does NOT contain a plant, leaf, or crop, set `is_crop_image` to false, set `disease_name` to "Non-Crop Image", set `severity` to "N/A", provide a polite rejection message in the first item of `action_plan` asking for a valid crop image, and set `confidence_score` to 1.0.
+CRITICAL RULE: If the uploaded image does NOT contain a plant, leaf, or crop, set `is_crop_image` to false, set `disease_name` to "Non-Crop Image", set `severity` to "N/A", provide a polite rejection message in the first item of `action_plan` asking for a valid crop image, and set `confidence_score` to 1.0. If the image shows an entire field or a whole plant instead of a specific leaf, immediately return a JSON response asking the user to provide a close-up photo of the affected area for a precise diagnosis.
 """
 
 model = genai.GenerativeModel(
@@ -55,6 +55,13 @@ def enhance_image(image_bytes):
     # Convert bytes to OpenCV format
     nparr = np.frombuffer(image_bytes, np.uint8)
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+    # 0. Smart Resizing (maintain aspect ratio)
+    height, width = img.shape[:2]
+    max_side = 1024
+    if max(height, width) > max_side:
+        scaling_factor = max_side / float(max(height, width))
+        img = cv2.resize(img, None, fx=scaling_factor, fy=scaling_factor, interpolation=cv2.INTER_AREA)
 
     # 1. Denoising (Removes graininess)
     denoised = cv2.fastNlMeansDenoisingColored(img, None, 10, 10, 7, 21)

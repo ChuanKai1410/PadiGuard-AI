@@ -189,7 +189,8 @@
                 notesPlaceholder: "Additional notes (optional)", analyzeBtn: "Analyze Image",
                 resultsTitle: "Results Dashboard", awaiting: "Awaiting analysis...",
                 uploadVerify: "Upload an image and verify with the AI agent.", processing: "Processing...",
-                analyzing: "Analyzing with Gemini...", promptLang: "English"
+                analyzing: "Analyzing with Gemini...", promptLang: "English",
+                timeoutError: "Timeout: Please take a closer photo of a single leaf for faster results."
             },
             bm: {
                 title: "PadiGuard AI", subtitle: "Pakar Agrotek & Sekuriti Makanan Malaysia",
@@ -200,7 +201,8 @@
                 notesPlaceholder: "Nota tambahan (pilihan)", analyzeBtn: "Analisis Imej",
                 resultsTitle: "Papan Pemuka Hasil", awaiting: "Menunggu analisis...",
                 uploadVerify: "Muat naik imej dan sahkan dengan ejen AI.", processing: "Sedang memproses...",
-                analyzing: "Menganalisis dengan Gemini...", promptLang: "Bahasa Malaysia"
+                analyzing: "Menganalisis dengan Gemini...", promptLang: "Bahasa Malaysia",
+                timeoutError: "Masa Tamat: Sila ambil gambar jarak dekat satu daun untuk hasil yang lebih pantas."
             },
             cn: {
                 title: "PadiGuard AI", subtitle: "马来西亚农业科技与食品安全专家",
@@ -211,7 +213,8 @@
                 notesPlaceholder: "附加备注（可选）", analyzeBtn: "分析图像",
                 resultsTitle: "结果面板", awaiting: "等待分析中...",
                 uploadVerify: "上传图像并通过AI代理进行验证。", processing: "处理中...",
-                analyzing: "正在使用Gemini分析...", promptLang: "Mandarin Chinese"
+                analyzing: "正在使用Gemini分析...", promptLang: "Mandarin Chinese",
+                timeoutError: "超时：请拍摄单片叶子的近景照片以获得更快的分析结果。"
             }
         };
 
@@ -314,6 +317,9 @@
             analyzeBtn.setAttribute('aria-disabled', 'true');
             analyzeBtn.innerHTML = `<div class="w-6 h-6 border-[3px] border-white/30 border-t-white rounded-full animate-spin"></div> <span>${i18n[currentLang].processing}</span>`;
             
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000);
+            
             try {
                 const response = await fetch('http://127.0.0.1:8000/analyze_base64', {
                     method: 'POST',
@@ -323,8 +329,11 @@
                     body: JSON.stringify({
                         image_base64: currentBase64,
                         prompt: `Act as a Malaysian Agrotech expert. The farmer observed the following: Issue - ${issueType.value}, Duration - ${issueDuration.value}. Additional notes: ${additionalNotes.value || 'None'}. Identify the disease in this Padi leaf and provide a 3-step action plan using local Malaysian safety standards. IMPORTANT: Ensure your ENTIRE final response is in ${i18n[currentLang].promptLang}.`
-                    })
+                    }),
+                    signal: controller.signal
                 });
+                
+                clearTimeout(timeoutId);
                 
                 const data = await response.json();
                 
@@ -343,7 +352,11 @@
                     contentState.innerHTML = `<div class="text-red-400 bg-red-400/10 p-4 rounded-lg border border-red-400/20"><strong>Error:</strong> ${data.message}</div>`;
                 }
             } catch (error) {
-                contentState.innerHTML = `<div class="text-red-400 bg-red-400/10 p-4 rounded-lg border border-red-400/20"><strong>Connection Error:</strong> ${error.message} - Ensure background server is running.</div>`;
+                if (error.name === 'AbortError') {
+                    contentState.innerHTML = `<div class="text-yellow-400 bg-yellow-400/10 p-4 rounded-lg border border-yellow-400/20"><strong>⌛ </strong> ${i18n[currentLang].timeoutError}</div>`;
+                } else {
+                    contentState.innerHTML = `<div class="text-red-400 bg-red-400/10 p-4 rounded-lg border border-red-400/20"><strong>Connection Error:</strong> ${error.message} - Ensure background server is running.</div>`;
+                }
             } finally {
                 loadingState.classList.add('hidden');
                 contentState.classList.remove('hidden');
