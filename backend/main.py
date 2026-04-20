@@ -3,7 +3,6 @@ import io
 import base64
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from pydantic import BaseModel
-import json
 from dotenv import load_dotenv
 import google.generativeai as genai
 from PIL import Image
@@ -17,38 +16,23 @@ genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 SYSTEM_PROMPT = """
 You are the PadiGuard AI Agent, an expert in Malaysian Agrotech and Food Security. 
 Your task is to analyze images of paddy crops (Padi).
-First, verify if the image actually contains a crop or leaf. If the image is NOT a crop (e.g., a person, car, animal, random object), set 'is_crop_image' to false, keep the disease name as "Not a Crop", severity as "N/A", confidence score as 0, and provide an empty list for the action plan.
-If it IS a crop:
-1. Set 'is_crop_image' to true.
-2. Identify the disease or pest.
-3. Provide a 'Severity Level' (Low, Medium, High).
-4. Create a 3-step 'Autonomous Action Plan' for the farmer.
-5. Align suggestions with Malaysian agricultural standards and SDGs[cite: 177, 251].
+1. Identify the disease or pest.
+2. Provide a 'Severity Level' (Low, Medium, High).
+3. Create a 3-step 'Autonomous Action Plan' for the farmer.
+4. Align suggestions with Malaysian agricultural standards and SDGs[cite: 177, 251].
 Respond strictly in English[cite: 361].
 """
 
-class PadiAnalysis(BaseModel):
-    is_crop_image: bool
-    disease_name: str
-    severity: str
-    confidence_score: float
-    action_plan: list[str]
-    malaysian_standard_reference: str
-
 model = genai.GenerativeModel(
     model_name="gemini-3-flash-preview",
-    system_instruction=SYSTEM_PROMPT,
-    generation_config={
-        "response_mime_type": "application/json",
-        "response_schema": PadiAnalysis,
-    }
+    system_instruction=SYSTEM_PROMPT
 )
 
 from fastapi.middleware.cors import CORSMiddleware
 
 class AnalyzeRequest(BaseModel):
     image_base64: str
-    prompt: str = "Analyze this Padi leaf image and fill the JSON schema."
+    prompt: str = "Act as a Malaysian Agrotech expert. Identify the disease in this Padi leaf and provide a 3-step action plan using local Malaysian safety standards."
 
 app = FastAPI()
 
@@ -76,15 +60,13 @@ async def analyze_crop(file: UploadFile = File(...)):
         
         # Call Gemini [cite: 312, 314]
         response = model.generate_content([
-            "Analyze this crop image and fill the JSON schema.",
+            "Analyze this crop image and provide the diagnosis and action plan.",
             img
         ])
         
-        structured_data = json.loads(response.text)
-        
         return {
             "track": "Padi & Plates (Agrotech)",
-            "data": structured_data,
+            "analysis": response.text,
             "status": "Success"
         }
     except Exception as e:
@@ -107,12 +89,10 @@ async def analyze_base64_image(request: AnalyzeRequest):
             img
         ])
         
-        structured_data = json.loads(response.text)
-        
         return {
             "track": "Padi & Plates (Agrotech)",
-            "data": structured_data,
+            "analysis": response.text,
             "status": "Success"
         }
     except Exception as e:
-        return {"status": "Error", "message": "JSON Parsing failed or AI error: " + str(e)}
+        return {"status": "Error", "message": str(e)}
