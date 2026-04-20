@@ -100,9 +100,24 @@
             </div>
 
             <div class="mt-8 flex flex-col gap-4">
-                <div>
-                    <label for="prompt-input" class="block font-bold text-stone-200 mb-2">Analysis Prompt</label>
-                    <textarea id="prompt-input" rows="3" aria-label="Analysis prompt" class="w-full bg-stone-900/80 border-2 border-stone-600 rounded-lg p-4 text-white focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all resize-none shadow-inner">Act as a Malaysian Agrotech expert. Identify the disease in this Padi leaf and provide a 3-step action plan using local Malaysian safety standards.</textarea>
+                <div class="flex flex-col gap-3">
+                    <label class="block font-bold text-stone-200">Observed Issue Details</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <select id="issue-type" aria-label="Issue Type" class="w-full bg-stone-900/80 border-2 border-stone-600 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all shadow-inner">
+                            <option value="Not Sure / General Checkup">Not Sure / General Checkup</option>
+                            <option value="Leaf Discoloration (Yellowing/Browning)">Leaf Discoloration (Yellowing/Browning)</option>
+                            <option value="Spots or Lesions on Leaves">Spots or Lesions on Leaves</option>
+                            <option value="Pest Damage / Eaten Leaves">Pest Damage / Eaten Leaves</option>
+                            <option value="Wilting or Drying out">Wilting or Drying out</option>
+                            <option value="Stunted Growth">Stunted Growth</option>
+                        </select>
+                        <select id="issue-duration" aria-label="Issue Duration" class="w-full bg-stone-900/80 border-2 border-stone-600 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all shadow-inner">
+                            <option value="Just noticed (1-2 days)">Just noticed (1-2 days)</option>
+                            <option value="This week (3-7 days)">This week (3-7 days)</option>
+                            <option value="More than a week">More than a week</option>
+                        </select>
+                    </div>
+                    <input type="text" id="additional-notes" placeholder="Additional notes (optional)" aria-label="Additional notes" class="w-full bg-stone-900/80 border-2 border-stone-600 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all shadow-inner" />
                 </div>
                 
                 <button id="analyze-btn" disabled aria-disabled="true" class="mt-2 w-full py-4 text-xl rounded-xl bg-stone-800 text-stone-400 font-bold border-2 border-stone-700 transition-all duration-300 flex items-center justify-center gap-2 cursor-not-allowed uppercase tracking-wide">
@@ -144,7 +159,9 @@
         const imagePreview = document.getElementById('image-preview');
         const uploadContent = document.getElementById('upload-content');
         const analyzeBtn = document.getElementById('analyze-btn');
-        const promptInput = document.getElementById('prompt-input');
+        const issueType = document.getElementById('issue-type');
+        const issueDuration = document.getElementById('issue-duration');
+        const additionalNotes = document.getElementById('additional-notes');
         
         const emptyState = document.getElementById('empty-state');
         const loadingState = document.getElementById('loading-state');
@@ -219,7 +236,7 @@
                     },
                     body: JSON.stringify({
                         image_base64: currentBase64,
-                        prompt: promptInput.value
+                        prompt: `Act as a Malaysian Agrotech expert. The farmer observed the following: Issue - ${issueType.value}, Duration - ${issueDuration.value}. Additional notes: ${additionalNotes.value || 'None'}. Identify the disease in this Padi leaf and provide a 3-step action plan using local Malaysian safety standards.`
                     })
                 });
                 
