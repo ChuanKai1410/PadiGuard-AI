@@ -10,9 +10,9 @@ This project natively integrates **Google Gemini 3 Flash** for rapid computer vi
 
 ## 🛠 Tech Stack
 - **AI Engine:** Google Gemini 3 Flash API
-- **Backend:** FastAPI (Python), Uvicorn, Pydantic
-- **Frontend:** HTML5, Tailwind CSS (via CDN), Vanilla JS, marked.js
-- **Deployment:** Google Cloud Run (Containerized via Docker)
+- **Backend:** FastAPI (Python), Uvicorn, Pydantic, OpenCV, NumPy
+- **Frontend:** HTML5, Tailwind CSS, Vanilla JS, marked.js
+- **Deployment:** Container Ready (Docker)
 
 ---
 
@@ -33,7 +33,7 @@ This project natively integrates **Google Gemini 3 Flash** for rapid computer vi
    ```
 4. Start the FastAPI server:
    ```bash
-   uvicorn main:app --reload
+   uvicorn main:app --reload --host 0.0.0.0
    ```
    > **Note:** The backend will run on **http://localhost:8000**. Built-in API documentation is available at **http://localhost:8000/docs**.
 
@@ -50,16 +50,24 @@ This project natively integrates **Google Gemini 3 Flash** for rapid computer vi
 
 ---
 
-## 🧠 Technical Execution
+## 🧠 Technical Execution & Key Features
 
-### Fast, Low-Latency Diagnostics
-We implemented **Gemini 3 Flash** as our core reasoning engine. Its significantly reduced latency makes it perfect for near-instant analysis of crop images—a critical requirement for farmers operating in the field where quick decisions save yields.
+### ✨ Computer Vision Preprocessing (OpenCV)
+To minimize API latency and maximize diagnostic accuracy, raw images undergo extreme optimization before hitting the cloud:
+1. **Smart Resizing:** Large mobile photos are instantly scaled down to a maximum side of 1024px while retaining aspect ratio, massively reducing payload transit time and token costs.
+2. **Denoising:** `fastNlMeansDenoisingColored` removes graininess common in low-light field imagery.
+3. **CLAHE Contrast Mapping:** Exposes subtle lesion boundaries and leaf discoloration algorithms might otherwise miss.
+4. **Sharpening:** A 3x3 convolution kernel extracts harsh edges of pest damages and necrotic spots.
 
-### Agentic AI Workflows
-Our API interacts with Gemini not just as a chatbot, but as an **Autonomous Agrotech Expert**. Prompts are hyper-structured to enforce an Agentic AI workflow:
-- The model must identify the disease.
-- Evaluate and classify the severity level.
-- Generate a strict **3-step actionable remedy plan** that complies with local **Malaysian agricultural and safety standards**.
+### 🌐 Instant Multi-Language Support (i18n)
+PadiGuard boasts full interface internationalization for **English, Bahasa Malaysia, and Mandarin Chinese**. Upon selecting a language, the UI changes instantly, and the dynamic backend prompt inherits the language context—commanding the Gemini agent to autonomously generate its complex diagnostic response entirely in the farmer's native language. 
 
-### Pydantic Schema Enforcement
-To ensure high-fidelity data transfer and zero-hallucination API outputs, we utilize **Pydantic** for rigorous Schema Enforcement. The Gemini API is programmatically constrained (`response_mime_type="application/json"`) to map its output identically to a predefined Backend Data Model, guaranteeing a rock-solid, professional-level interface and minimizing parsing bugs across the stack.
+### 🛡️ Rigid Agentic Workflows & Schema Enforcement
+Our API interacts with Gemini not as a chatbot, but as an **Autonomous Agrotech Expert**. 
+- Using **Pydantic**, the Gemini 3 Flash model is strictly constrained (`response_mime_type="application/json"`) to map its output to our exact `PadiAnalysis` schema schema—effectively eliminating arbitrary hallucinations.
+- Diagnoses natively include strict **3-step autonomous action plans** aligned with **Malaysian agricultural safety standards and SDGs**.
+
+### 🛑 Intelligent Error Handling & Guardrails
+- **Non-Crop & Wide Shot Rejection:** The model is armed with critical rules to detect non-plant imagery or sweeping wide shots of entire fields. It politely rejects these images and instructs the farmer to take a close-up photo of the single affected leaf.
+- **Guided Farmer Inputs:** Instead of vague text boxes, farmers input context through specific, localized dropdown menus (Symptom, Duration), guiding the model towards an accurate conclusion.
+- **Frontend AbortControllers:** The UI enforces a strict 30-second client-side timeout. If field internet is too slow, it gracefully aborts and prompts the user to retake the photo rather than hanging indefinitely.
