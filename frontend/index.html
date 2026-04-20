@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PadiGuard AI Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        .animate-pulse-glow {
+            animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(34, 197, 94, 0.8); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom scrollbar for markdown results */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        /* Optional basic prose styling for marked output */
+        .prose h1, .prose h2, .prose h3 {
+            color: #f8fafc;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            font-weight: 600;
+        }
+        .prose h1 { font-size: 1.5rem; }
+        .prose h2 { font-size: 1.25rem; }
+        .prose h3 { font-size: 1.1rem; }
+        .prose p { margin-bottom: 1em; line-height: 1.6; }
+        .prose ul, .prose ol { margin-left: 1.5em; margin-bottom: 1em; }
+        .prose ul { list-style-type: disc; }
+        .prose ol { list-style-type: decimal; }
+        .prose strong { color: #34d399; font-weight: 600; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body class="p-6 md:p-12 flex flex-col items-center">
+    
+    <header class="w-full max-w-5xl flex justify-between items-center mb-10 fade-in">
+        <div>
+            <h1 class="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-600">PadiGuard AI</h1>
+            <p class="text-slate-400 mt-2">Malaysian Agrotech & Food Security Expert</p>
+        </div>
+        <div class="h-12 w-12 rounded-full bg-gradient-to-tr from-green-400 to-emerald-600 animate-pulse-glow flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+        </div>
+    </header>
+
+    <main class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Upload Section -->
+        <section class="glass-panel p-6 md:p-8 flex flex-col h-full fade-in" style="animation-delay: 0.1s;">
+            <h2 class="text-xl md:text-2xl font-semibold mb-6 flex items-center gap-2">
+                <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                Image Analysis
+            </h2>
+            
+            <div id="drop-zone" class="border-2 border-dashed border-slate-600 rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-green-400 transition-colors bg-slate-800/50 flex-grow min-h-[250px] relative overflow-hidden group">
+                <input type="file" id="file-upload" class="hidden" accept="image/*" />
+                <div id="upload-content" class="flex flex-col items-center w-full transition-opacity duration-300">
+                    <svg class="w-12 h-12 text-slate-400 group-hover:text-green-400 transition-colors mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                    <p class="text-lg font-medium text-slate-300">Click or drag image to upload</p>
+                    <p class="text-sm text-slate-500 mt-2">Supports JPG, PNG</p>
+                </div>
+                <!-- Image Preview gets absolute position to cover background while keeping interactions -->
+                <img id="image-preview" class="absolute inset-0 w-full h-full object-cover opacity-0 pointer-events-none transition-opacity duration-300" />
+            </div>
+
+            <div class="mt-6 flex flex-col gap-4">
+                <div>
+                    <label class="block text-sm text-slate-400 mb-2">Analysis Prompt</label>
+                    <textarea id="prompt-input" rows="3" class="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-sm text-slate-200 focus:outline-none focus:border-green-500 transition-colors resize-none">Act as a Malaysian Agrotech expert. Identify the disease in this Padi leaf and provide a 3-step action plan using local Malaysian safety standards.</textarea>
+                </div>
+                
+                <button id="analyze-btn" disabled class="w-full py-4 rounded-xl bg-slate-700 text-slate-400 font-semibold transition-all duration-300 flex items-center justify-center gap-2 cursor-not-allowed">
+                    <span>Analyze Image</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="glass-panel p-6 md:p-8 flex flex-col h-[600px] fade-in" style="animation-delay: 0.2s;">
+            <h2 class="text-xl md:text-2xl font-semibold mb-6 flex items-center gap-2">
+                <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                Results Dashboard
+            </h2>
+            
+            <div id="results-container" class="flex-grow overflow-y-auto bg-slate-800/30 rounded-xl border border-slate-700/50 p-6 relative">
+                
+                <div id="empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 text-center p-4">
+                    <svg class="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    <p>Awaiting analysis... Upload an image and verify with the AI agent.</p>
+                </div>
+                
+                <div id="loading-state" class="absolute inset-0 flex flex-col items-center justify-center hidden bg-slate-800/80 backdrop-blur-sm z-10 rounded-xl">
+                    <div class="w-12 h-12 border-4 border-green-500/20 border-t-green-500 rounded-full animate-spin mb-4"></div>
+                    <p class="text-green-400 font-medium animate-pulse">Analyzing with Gemini...</p>
+                </div>
+
+                <div id="content-state" class="hidden text-slate-300 prose prose-invert w-full max-w-none">
+                    <!-- Markdown output goes here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-upload');
+        const imagePreview = document.getElementById('image-preview');
+        const uploadContent = document.getElementById('upload-content');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const promptInput = document.getElementById('prompt-input');
+        
+        const emptyState = document.getElementById('empty-state');
+        const loadingState = document.getElementById('loading-state');
+        const contentState = document.getElementById('content-state');
+        
+        let currentBase64 = null;
+
+        // Handle Click
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        // Handle Drag & Drop
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-green-400', 'bg-slate-700/50');
+        });
+        
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-green-400', 'bg-slate-700/50');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-green-400', 'bg-slate-700/50');
+            if (e.dataTransfer.files.length) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) return alert('Please upload an image file.');
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentBase64 = e.target.result;
+                
+                // Show Preview
+                imagePreview.src = currentBase64;
+                imagePreview.classList.remove('opacity-0');
+                uploadContent.classList.add('opacity-0');
+                
+                // Enable Button
+                analyzeBtn.disabled = false;
+                analyzeBtn.classList.remove('bg-slate-700', 'text-slate-400', 'cursor-not-allowed');
+                analyzeBtn.classList.add('bg-gradient-to-r', 'from-green-500', 'to-emerald-600', 'text-white', 'hover:shadow-lg', 'hover:shadow-green-500/30', 'cursor-pointer');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        analyzeBtn.addEventListener('click', async () => {
+            if (!currentBase64) return;
+            
+            // UI State updates
+            emptyState.classList.add('hidden');
+            contentState.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+            analyzeBtn.disabled = true;
+            analyzeBtn.innerHTML = `<div class="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div> Processing...`;
+            
+            try {
+                const response = await fetch('http://127.0.0.1:8000/analyze_base64', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        image_base64: currentBase64,
+                        prompt: promptInput.value
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'Success') {
+                    // Update content and display markdown correctly
+                    contentState.innerHTML = marked.parse(data.analysis);
+                } else {
+                    contentState.innerHTML = `<div class="text-red-400 bg-red-400/10 p-4 rounded-lg border border-red-400/20"><strong>Error:</strong> ${data.message}</div>`;
+                }
+            } catch (error) {
+                contentState.innerHTML = `<div class="text-red-400 bg-red-400/10 p-4 rounded-lg border border-red-400/20"><strong>Connection Error:</strong> ${error.message} - Ensure background server is running.</div>`;
+            } finally {
+                loadingState.classList.add('hidden');
+                contentState.classList.remove('hidden');
+                
+                // Reset Button
+                analyzeBtn.disabled = false;
+                analyzeBtn.innerHTML = `<span>Analyze Image</span>`;
+            }
+        });
+    </script>
+</body>
+</html>
