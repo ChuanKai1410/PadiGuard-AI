@@ -72,8 +72,8 @@
     
     <header class="w-full max-w-5xl flex justify-between items-center mb-10 fade-in">
         <div>
-            <h1 class="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-green-500 tracking-tight">PadiGuard AI</h1>
-            <p class="text-stone-300 font-medium mt-2">Malaysian Agrotech & Food Security Expert</p>
+            <h1 id="ui-title" class="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-green-500 tracking-tight">PadiGuard AI</h1>
+            <p id="ui-subtitle" class="text-stone-300 font-medium mt-2">Malaysian Agrotech & Food Security Expert</p>
         </div>
         <div class="h-20 w-20 md:h-24 md:w-24 flex items-center justify-center overflow-hidden rounded-full">
             <img src="/public/images/padiguard_logo.svg" alt="PadiGuard Logo" class="w-58 h-58 object-cover drop-shadow-[0_0_20px_rgba(16,185,129,0.5)] animate-pulse-glow" />
@@ -85,15 +85,15 @@
         <section class="glass-panel p-6 md:p-8 flex flex-col h-full fade-in" style="animation-delay: 0.1s;">
             <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-2 text-white">
                 <svg class="w-7 h-7 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                Image Analysis
+                <span id="ui-analysis-title">Image Analysis</span>
             </h2>
             
             <div id="drop-zone" tabindex="0" aria-label="Upload crop image" class="border-[3px] border-dashed border-stone-500 focus-within:ring-4 focus-within:ring-emerald-400/50 focus:outline-none focus:border-emerald-400 rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-emerald-400 hover:bg-stone-800/80 transition-all min-h-[250px] relative overflow-hidden group bg-stone-900/60 flex-grow">
                 <input type="file" id="file-upload" class="hidden" accept="image/*" tabindex="-1" />
                 <div id="upload-content" class="flex flex-col items-center w-full transition-opacity duration-300">
                     <svg class="w-14 h-14 text-stone-400 group-hover:text-emerald-400 transition-colors mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                    <p class="text-xl font-bold text-stone-100">Click or Drag Image to Upload</p>
-                    <p class="text-stone-300 mt-2 font-medium">Supports JPG, PNG</p>
+                    <p id="ui-upload-title" class="text-xl font-bold text-stone-100">Click or Drag Image to Upload</p>
+                    <p id="ui-upload-sub" class="text-stone-300 mt-2 font-medium">Supports JPG, PNG</p>
                 </div>
                 <!-- Image Preview gets absolute position to cover background while keeping interactions -->
                 <img id="image-preview" alt="Uploaded Preview" class="absolute inset-0 w-full h-full object-cover opacity-0 pointer-events-none transition-opacity duration-300" />
@@ -101,7 +101,7 @@
 
             <div class="mt-8 flex flex-col gap-4">
                 <div class="flex flex-col gap-3">
-                    <label class="block font-bold text-stone-200">Observed Issue Details</label>
+                    <label id="ui-issue-details" class="block font-bold text-stone-200">Observed Issue Details</label>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <select id="issue-type" aria-label="Issue Type" class="w-full bg-stone-900/80 border-2 border-stone-600 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all shadow-inner">
                             <option value="Not Sure / General Checkup">Not Sure / General Checkup</option>
@@ -126,31 +126,43 @@
             </div>
         </section>
 
-        <!-- Results Section -->
-        <section class="glass-panel p-6 md:p-8 flex flex-col h-[600px] fade-in" style="animation-delay: 0.2s;">
-            <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-2 text-white">
-                <svg class="w-7 h-7 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-                Results Dashboard
-            </h2>
+        <!-- Results Section Container -->
+        <div class="flex flex-col gap-4">
+            <section class="glass-panel p-6 md:p-8 flex flex-col h-[600px] fade-in" style="animation-delay: 0.2s;">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl md:text-3xl font-bold flex items-center gap-2 text-white">
+                        <svg class="w-7 h-7 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                        <span id="ui-results-title">Results Dashboard</span>
+                    </h2>
+                </div>
             
             <div id="results-container" class="flex-grow overflow-y-auto bg-stone-900/60 rounded-xl border-2 border-stone-700 p-8 relative">
                 
                 <div id="empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-stone-300 font-medium text-center p-6">
                     <svg class="w-16 h-16 mb-4 opacity-70 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                    <p class="text-xl">Awaiting analysis...</p>
-                    <p class="text-stone-400 mt-2 text-base">Upload an image and verify with the AI agent.</p>
+                    <p id="ui-awaiting" class="text-xl">Awaiting analysis...</p>
+                    <p id="ui-upload-verify" class="text-stone-400 mt-2 text-base">Upload an image and verify with the AI agent.</p>
                 </div>
                 
                 <div id="loading-state" class="absolute inset-0 flex flex-col items-center justify-center hidden bg-stone-900/90 backdrop-blur-sm z-10 rounded-xl">
                     <div class="w-14 h-14 border-[5px] border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mb-4"></div>
-                    <p class="text-emerald-400 font-bold text-xl animate-pulse">Analyzing with Gemini...</p>
+                    <p id="ui-analyzing" class="text-emerald-400 font-bold text-xl animate-pulse">Analyzing with Gemini...</p>
                 </div>
 
                 <div id="content-state" class="hidden text-white prose prose-invert prose-lg w-full max-w-none">
                     <!-- Markdown output goes here -->
                 </div>
+                </div>
+            </section>
+            
+            <div class="flex justify-end fade-in" style="animation-delay: 0.3s;">
+                <div class="flex rounded-lg overflow-hidden border border-stone-600 bg-stone-900 shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                    <button onclick="setLanguage('en')" id="lang-en" class="px-3 md:px-4 py-1.5 font-bold text-sm transition-colors bg-emerald-600 text-white">EN</button>
+                    <button onclick="setLanguage('bm')" id="lang-bm" class="px-3 md:px-4 py-1.5 font-bold text-sm transition-colors bg-stone-800 text-stone-400 hover:text-white">BM</button>
+                    <button onclick="setLanguage('cn')" id="lang-cn" class="px-3 md:px-4 py-1.5 font-bold text-sm transition-colors bg-stone-800 text-stone-400 hover:text-white">CN</button>
+                </div>
             </div>
-        </section>
+        </div>
     </main>
 
     <script>
@@ -167,6 +179,80 @@
         const loadingState = document.getElementById('loading-state');
         const contentState = document.getElementById('content-state');
         
+        const i18n = {
+            en: {
+                title: "PadiGuard AI", subtitle: "Malaysian Agrotech & Food Security Expert",
+                analysisTitle: "Image Analysis", uploadTitle: "Click or Drag Image to Upload",
+                uploadSub: "Supports JPG, PNG", issueDetails: "Observed Issue Details",
+                issueOptions: ["Not Sure / General Checkup", "Leaf Discoloration (Yellowing/Browning)", "Spots or Lesions on Leaves", "Pest Damage / Eaten Leaves", "Wilting or Drying out", "Stunted Growth"],
+                durationOptions: ["Just noticed (1-2 days)", "This week (3-7 days)", "More than a week"],
+                notesPlaceholder: "Additional notes (optional)", analyzeBtn: "Analyze Image",
+                resultsTitle: "Results Dashboard", awaiting: "Awaiting analysis...",
+                uploadVerify: "Upload an image and verify with the AI agent.", processing: "Processing...",
+                analyzing: "Analyzing with Gemini...", promptLang: "English"
+            },
+            bm: {
+                title: "PadiGuard AI", subtitle: "Pakar Agrotek & Sekuriti Makanan Malaysia",
+                analysisTitle: "Analisis Imej", uploadTitle: "Klik atau Seret Imej untuk Muat Naik",
+                uploadSub: "Menyokong JPG, PNG", issueDetails: "Butiran Isu yang Diperhatikan",
+                issueOptions: ["Kurang Pasti / Pemeriksaan Umum", "Perubahan Warna Daun (Kekuningan/Kecoklatan)", "Bintik atau Lesi pada Daun", "Kerosakan Perosak / Daun Dimakan", "Layu atau Kekeringan", "Pertumbuhan Terbantut"],
+                durationOptions: ["Baru dikesan (1-2 hari)", "Minggu ini (3-7 hari)", "Lebih dari seminggu"],
+                notesPlaceholder: "Nota tambahan (pilihan)", analyzeBtn: "Analisis Imej",
+                resultsTitle: "Papan Pemuka Hasil", awaiting: "Menunggu analisis...",
+                uploadVerify: "Muat naik imej dan sahkan dengan ejen AI.", processing: "Sedang memproses...",
+                analyzing: "Menganalisis dengan Gemini...", promptLang: "Bahasa Malaysia"
+            },
+            cn: {
+                title: "PadiGuard AI", subtitle: "马来西亚农业科技与食品安全专家",
+                analysisTitle: "图像分析", uploadTitle: "点击或拖拽图像上传",
+                uploadSub: "支持 JPG, PNG", issueDetails: "观察到的问题细节",
+                issueOptions: ["不确定 / 常规检查", "叶片变色（发黄/发褐）", "叶片出现斑点或病斑", "虫害 / 叶片被啃食", "枯萎或干枯", "生长迟缓"],
+                durationOptions: ["刚发现 (1-2天)", "本周 (3-7天)", "一周以上"],
+                notesPlaceholder: "附加备注（可选）", analyzeBtn: "分析图像",
+                resultsTitle: "结果面板", awaiting: "等待分析中...",
+                uploadVerify: "上传图像并通过AI代理进行验证。", processing: "处理中...",
+                analyzing: "正在使用Gemini分析...", promptLang: "Mandarin Chinese"
+            }
+        };
+
+        let currentLang = 'en';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            const t = i18n[lang];
+            
+            ['en', 'bm', 'cn'].forEach(l => {
+                const btn = document.getElementById('lang-' + l);
+                if (l === lang) {
+                    btn.className = "px-3 md:px-4 py-1.5 font-bold text-sm transition-colors bg-emerald-600 text-white";
+                } else {
+                    btn.className = "px-3 md:px-4 py-1.5 font-bold text-sm transition-colors bg-stone-800 text-stone-400 hover:text-white";
+                }
+            });
+
+            document.getElementById('ui-title').innerText = t.title;
+            document.getElementById('ui-subtitle').innerText = t.subtitle;
+            document.getElementById('ui-analysis-title').innerText = t.analysisTitle;
+            document.getElementById('ui-upload-title').innerText = t.uploadTitle;
+            document.getElementById('ui-upload-sub').innerText = t.uploadSub;
+            document.getElementById('ui-issue-details').innerText = t.issueDetails;
+            document.getElementById('additional-notes').placeholder = t.notesPlaceholder;
+            
+            if(!document.getElementById('analyze-btn').disabled) {
+                document.getElementById('analyze-btn').innerHTML = `<span>${t.analyzeBtn}</span>`;
+            }
+            document.getElementById('ui-results-title').innerText = t.resultsTitle;
+            document.getElementById('ui-awaiting').innerText = t.awaiting;
+            document.getElementById('ui-upload-verify').innerText = t.uploadVerify;
+            document.getElementById('ui-analyzing').innerText = t.analyzing;
+
+            const issueSelect = document.getElementById('issue-type');
+            issueSelect.innerHTML = t.issueOptions.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+            
+            const durationSelect = document.getElementById('issue-duration');
+            durationSelect.innerHTML = t.durationOptions.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+        }
+
         let currentBase64 = null;
 
         // Handle Click
@@ -226,7 +312,7 @@
             loadingState.classList.remove('hidden');
             analyzeBtn.disabled = true;
             analyzeBtn.setAttribute('aria-disabled', 'true');
-            analyzeBtn.innerHTML = `<div class="w-6 h-6 border-[3px] border-white/30 border-t-white rounded-full animate-spin"></div> <span>Processing...</span>`;
+            analyzeBtn.innerHTML = `<div class="w-6 h-6 border-[3px] border-white/30 border-t-white rounded-full animate-spin"></div> <span>${i18n[currentLang].processing}</span>`;
             
             try {
                 const response = await fetch('http://127.0.0.1:8000/analyze_base64', {
@@ -236,7 +322,7 @@
                     },
                     body: JSON.stringify({
                         image_base64: currentBase64,
-                        prompt: `Act as a Malaysian Agrotech expert. The farmer observed the following: Issue - ${issueType.value}, Duration - ${issueDuration.value}. Additional notes: ${additionalNotes.value || 'None'}. Identify the disease in this Padi leaf and provide a 3-step action plan using local Malaysian safety standards.`
+                        prompt: `Act as a Malaysian Agrotech expert. The farmer observed the following: Issue - ${issueType.value}, Duration - ${issueDuration.value}. Additional notes: ${additionalNotes.value || 'None'}. Identify the disease in this Padi leaf and provide a 3-step action plan using local Malaysian safety standards. IMPORTANT: Ensure your ENTIRE final response is in ${i18n[currentLang].promptLang}.`
                     })
                 });
                 
@@ -265,7 +351,7 @@
                 // Reset Button
                 analyzeBtn.disabled = false;
                 analyzeBtn.setAttribute('aria-disabled', 'false');
-                analyzeBtn.innerHTML = `<span>Analyze Image</span>`;
+                analyzeBtn.innerHTML = `<span>${i18n[currentLang].analyzeBtn}</span>`;
             }
         });
     </script>

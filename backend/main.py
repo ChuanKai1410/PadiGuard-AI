@@ -29,7 +29,7 @@ Your task is to analyze images of paddy crops (Padi).
 2. Provide a 'Severity Level' (Low, Medium, High).
 3. Create a 3-step 'Autonomous Action Plan' for the farmer.
 4. Align suggestions with Malaysian agricultural standards and SDGs[cite: 177, 251].
-Respond strictly in English[cite: 361].
+Respond entirely and strictly in the language requested by the user prompt.
 
 CRITICAL RULE: If the uploaded image does NOT contain a plant, leaf, or crop, set `is_crop_image` to false, set `disease_name` to "Non-Crop Image", set `severity` to "N/A", provide a polite rejection message in the first item of `action_plan` asking for a valid crop image, and set `confidence_score` to 1.0.
 """
