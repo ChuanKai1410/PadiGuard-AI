@@ -1,20 +1,62 @@
-# PadiGuard AI - Project 2030 MyAI Future Hackathon
-**Track:** Track 1: Padi & Plates (Agrotech & Food Security)
+# 🌾 PadiGuard AI
+> **Project 2030 MyAI Future Hackathon** | **Track 1: Padi & Plates (Agrotech & Food Security)**
 
-## AI Disclosure
-[cite_start]This project utilizes **Google Gemini 3 Flash** for crop disease identification and **Google AI Studio** for prompt engineering[cite: 90, 314].
+PadiGuard AI is an intelligent, low-latency diagnostic tool designed for Malaysian farmers. By leveraging cutting-edge Agentic AI, it provides near-instant crop disease identification and localized, actionable remedy plans to safeguard crop yields and promote food security.
 
-## Tech Stack
-- **AI:** Gemini API
-- [cite_start]**Backend:** FastAPI (Python) [cite: 113, 114]
-- [cite_start]**Deployment:** Google Cloud Run [cite: 87, 110]
+---
 
-## How to Run Locally
-1. Install dependencies: `cd backend` and `pip install -r requirements.txt`
-2. Add your `GEMINI_API_KEY` to a `.env` file in the `backend` directory.
-3. Start the Backend API: `uvicorn main:app --reload`. The backend will run on **http://localhost:8000** (Documentation available at **http://localhost:8000/docs**).
-4. Start the Frontend UI: Open a new terminal in the `frontend` directory and run `python -m http.server 3000`. The frontend will be accessible at **http://localhost:3000**.
+## 🤖 AI Disclosure
+This project natively integrates **Google Gemini 3 Flash** for rapid computer vision and diagnostic reasoning. Model behavior is sculpted using **Google AI Studio** for precise prompt engineering and structured agentic outputs.
 
-## Technical Execution
-- **Low-Latency Diagnostics:** We implemented **Gemini 3 Flash** as the core model. Its lightweight and fast inference makes it perfect for near-instant analysis of crop images, essential for farmers out in the field.
-- **Agentic AI Workflows:** Prompts are structured to enforce an Agentic AI workflow—the model doesn't just describe what it sees, but is engineered to act as an autonomous Agrotech expert. It explicitly formats its output to give structured disease identification, severity levels, and an actionable 3-step remedy plan compliant with local Malaysian safety standards.
+## 🛠 Tech Stack
+- **AI Engine:** Google Gemini 3 Flash API
+- **Backend:** FastAPI (Python), Uvicorn, Pydantic
+- **Frontend:** HTML5, Tailwind CSS (via CDN), Vanilla JS, marked.js
+- **Deployment:** Google Cloud Run (Containerized via Docker)
+
+---
+
+## 🚀 How to Run Locally
+
+### 1️⃣ Backend Setup
+1. Open a terminal and navigate to the backend folder:
+   ```bash
+   cd backend
+   ```
+2. Install the required Python dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Create a `.env` file in the `backend` directory and add your API key:
+   ```env
+   GEMINI_API_KEY="your_google_gemini_api_key_here"
+   ```
+4. Start the FastAPI server:
+   ```bash
+   uvicorn main:app --reload
+   ```
+   > **Note:** The backend will run on **http://localhost:8000**. Built-in API documentation is available at **http://localhost:8000/docs**.
+
+### 2️⃣ Frontend Setup
+1. Open a **new, separate terminal window** and navigate to the frontend folder:
+   ```bash
+   cd frontend
+   ```
+2. Start the local HTTP server:
+   ```bash
+   python -m http.server 3000
+   ```
+3. Open your browser and navigate to **http://localhost:3000** to use the PadiGuard AI Dashboard.
+
+---
+
+## 🧠 Technical Execution
+
+### Fast, Low-Latency Diagnostics
+We implemented **Gemini 3 Flash** as our core reasoning engine. Its significantly reduced latency makes it perfect for near-instant analysis of crop images—a critical requirement for farmers operating in the field where quick decisions save yields.
+
+### Agentic AI Workflows
+Our API interacts with Gemini not just as a chatbot, but as an **Autonomous Agrotech Expert**. Prompts are hyper-structured to enforce an Agentic AI workflow:
+- The model must identify the disease.
+- Evaluate and classify the severity level.
+- Generate a strict **3-step actionable remedy plan** that complies with local **Malaysian agricultural and safety standards**.
