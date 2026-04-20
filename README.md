@@ -3,6 +3,8 @@
 
 PadiGuard AI is an intelligent, low-latency diagnostic tool designed for Malaysian farmers. By leveraging cutting-edge Agentic AI, it provides near-instant crop disease identification and localized, actionable remedy plans to safeguard crop yields and promote food security.
 
+🔗 **Live Deployment:** [https://padiguard-service-459297489399.asia-southeast1.run.app/](https://padiguard-service-459297489399.asia-southeast1.run.app/)
+
 ---
 
 ## 🤖 AI Disclosure
@@ -12,7 +14,7 @@ This project natively integrates **Google Gemini 3 Flash** for rapid computer vi
 - **AI Engine:** Google Gemini 3 Flash API
 - **Backend:** FastAPI (Python), Uvicorn, Pydantic, OpenCV, NumPy
 - **Frontend:** HTML5, Tailwind CSS, Vanilla JS, marked.js
-- **Deployment:** Container Ready (Docker)
+- **Deployment:** Google Cloud Run (Containerized via Docker)
 
 ---
 
