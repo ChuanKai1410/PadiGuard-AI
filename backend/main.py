@@ -1,12 +1,14 @@
 import os
 import io
 import base64
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel
 import json
 from dotenv import load_dotenv
 import google.generativeai as genai
 from PIL import Image
+import cv2
+import numpy as np
 
 load_dotenv()
 
@@ -49,6 +51,30 @@ class AnalyzeRequest(BaseModel):
     image_base64: str
     prompt: str = "Act as a Malaysian Agrotech expert. Identify the disease in this Padi leaf and provide a 3-step action plan using local Malaysian safety standards."
 
+def enhance_image(image_bytes):
+    # Convert bytes to OpenCV format
+    nparr = np.frombuffer(image_bytes, np.uint8)
+    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+    # 1. Denoising (Removes graininess)
+    denoised = cv2.fastNlMeansDenoisingColored(img, None, 10, 10, 7, 21)
+
+    # 2. CLAHE (Better contrast for disease symptoms)
+    lab = cv2.cvtColor(denoised, cv2.COLOR_BGR2LAB)
+    l, a, b = cv2.split(lab)
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    cl = clahe.apply(l)
+    limg = cv2.merge((cl, a, b))
+    enhanced_img = cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
+
+    # 3. Sharpening Kernel
+    kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
+    sharpened = cv2.filter2D(enhanced_img, -1, kernel)
+
+    # Convert back to PIL for Gemini
+    success, encoded_img = cv2.imencode('.jpg', sharpened)
+    return Image.open(io.BytesIO(encoded_img.tobytes()))
+
 app = FastAPI()
 
 app.add_middleware(
@@ -63,30 +89,6 @@ app.add_middleware(
 async def read_root():
     return {"message": "Welcome to PadiGuard AI API. Go to /docs for API documentation."}
 
-@app.post("/analyze")
-async def analyze_crop(file: UploadFile = File(...)):
-    if not file.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="File must be an image")
-
-    try:
-        # Read and prepare image
-        request_object_content = await file.read()
-        img = Image.open(io.BytesIO(request_object_content))
-        
-        # Call Gemini [cite: 312, 314]
-        response = model.generate_content([
-            "Analyze this crop image and provide the diagnosis and action plan. Format your output strictly adhering to the JSON schema.",
-            img
-        ])
-        
-        structured_data = json.loads(response.text)
-        
-        return {
-            "status": "Success",
-            "data": structured_data
-        }
-    except Exception as e:
-        return {"status": "Error", "message": str(e)}
 
 @app.post("/analyze_base64")
 async def analyze_base64_image(request: AnalyzeRequest):
@@ -98,11 +100,13 @@ async def analyze_base64_image(request: AnalyzeRequest):
             base64_data = request.image_base64
             
         image_bytes = base64.b64decode(base64_data)
-        img = Image.open(io.BytesIO(image_bytes))
+        
+        # Enhance the blurry image first
+        ready_image = enhance_image(image_bytes)
         
         response = model.generate_content([
             request.prompt + " Format your output strictly adhering to the JSON schema.",
-            img
+            ready_image
         ])
         
         structured_data = json.loads(response.text)
