@@ -224,8 +224,52 @@
                 const data = await response.json();
                 
                 if (data.status === 'Success') {
-                    // Update content and display markdown correctly
-                    contentState.innerHTML = marked.parse(data.analysis);
+                    const info = data.data;
+                    contentState.innerHTML = `
+                        <div class="mb-6 fade-in" style="animation-delay: 0.1s;">
+                            <h3 class="text-2xl font-bold mb-3 flex items-center gap-2">
+                                <span class="bg-slate-700/50 p-2 rounded-lg"><svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></span>
+                                <span class="bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-600">${info.disease_name}</span>
+                            </h3>
+                            <div class="flex flex-wrap gap-3 text-sm font-semibold mb-6">
+                                <span class="bg-slate-700/50 border border-slate-600 px-4 py-1.5 rounded-full flex items-center gap-2">
+                                    Severity: 
+                                    <span class="${info.severity.toLowerCase() === 'high' ? 'text-rose-400' : (info.severity.toLowerCase() === 'medium' ? 'text-amber-400' : 'text-emerald-400')} uppercase tracking-wide">
+                                        ${info.severity}
+                                    </span>
+                                </span>
+                                <span class="bg-slate-700/50 border border-slate-600 px-4 py-1.5 rounded-full flex items-center gap-2">
+                                    Confidence: 
+                                    <span class="text-blue-400">${(info.confidence_score * 100).toFixed(1)}%</span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6 fade-in" style="animation-delay: 0.2s;">
+                            <h4 class="text-lg font-bold mb-3 text-slate-200 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                Recommended Action Plan
+                            </h4>
+                            <ul class="space-y-3">
+                                ${info.action_plan.map((step, idx) => \`
+                                    <li class="flex items-start gap-4 p-4 rounded-xl bg-slate-800/40 border border-slate-700/50 hover:border-emerald-500/30 transition-colors">
+                                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold border border-emerald-500/20">\${idx + 1}</div>
+                                        <p class="text-slate-300 leading-relaxed pt-1">\${step}</p>
+                                    </li>
+                                \`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="fade-in" style="animation-delay: 0.3s;">
+                            <div class="flex items-start gap-3 p-4 rounded-xl bg-slate-800/60 border border-slate-700">
+                                <svg class="w-5 h-5 text-slate-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                                <div>
+                                    <h5 class="text-sm font-semibold text-slate-200 mb-1">Malaysian Safety Standard Reference</h5>
+                                    <p class="text-sm text-slate-400">${info.malaysian_standard_reference}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
                 } else {
                     contentState.innerHTML = `<div class="text-red-400 bg-red-400/10 p-4 rounded-lg border border-red-400/20"><strong>Error:</strong> ${data.message}</div>`;
                 }

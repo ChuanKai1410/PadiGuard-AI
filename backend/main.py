@@ -3,6 +3,7 @@ import io
 import base64
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from pydantic import BaseModel
+import json
 from dotenv import load_dotenv
 import google.generativeai as genai
 from PIL import Image
@@ -23,16 +24,27 @@ Your task is to analyze images of paddy crops (Padi).
 Respond strictly in English[cite: 361].
 """
 
+class PadiAnalysis(BaseModel):
+    disease_name: str
+    severity: str
+    confidence_score: float
+    action_plan: list[str]
+    malaysian_standard_reference: str
+
 model = genai.GenerativeModel(
     model_name="gemini-3-flash-preview",
-    system_instruction=SYSTEM_PROMPT
+    system_instruction=SYSTEM_PROMPT,
+    generation_config={
+        "response_mime_type": "application/json",
+        "response_schema": PadiAnalysis,
+    }
 )
 
 from fastapi.middleware.cors import CORSMiddleware
 
 class AnalyzeRequest(BaseModel):
     image_base64: str
-    prompt: str = "Act as a Malaysian Agrotech expert. Identify the disease in this Padi leaf and provide a 3-step action plan using local Malaysian safety standards."
+    prompt: str = "Analyze this Padi leaf image and fill the JSON schema."
 
 app = FastAPI()
 
@@ -60,13 +72,15 @@ async def analyze_crop(file: UploadFile = File(...)):
         
         # Call Gemini [cite: 312, 314]
         response = model.generate_content([
-            "Analyze this crop image and provide the diagnosis and action plan.",
+            "Analyze this crop image and fill the JSON schema.",
             img
         ])
         
+        structured_data = json.loads(response.text)
+        
         return {
             "track": "Padi & Plates (Agrotech)",
-            "analysis": response.text,
+            "data": structured_data,
             "status": "Success"
         }
     except Exception as e:
@@ -89,10 +103,12 @@ async def analyze_base64_image(request: AnalyzeRequest):
             img
         ])
         
+        structured_data = json.loads(response.text)
+        
         return {
             "track": "Padi & Plates (Agrotech)",
-            "analysis": response.text,
+            "data": structured_data,
             "status": "Success"
         }
     except Exception as e:
-        return {"status": "Error", "message": str(e)}
+        return {"status": "Error", "message": "JSON Parsing failed or AI error: " + str(e)}
