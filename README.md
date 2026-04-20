@@ -14,7 +14,7 @@ This project natively integrates **Google Gemini 3 Flash** for rapid computer vi
 - **AI Engine:** Google Gemini 3 Flash API
 - **Backend:** FastAPI (Python), Uvicorn, Pydantic, OpenCV, NumPy
 - **Frontend:** HTML5, Tailwind CSS, Vanilla JS, marked.js
-- **Deployment:** Google Cloud Run (Containerized via Docker)
+- **Deployment:** Google Cloud Run (via Google Cloud Shell)
 
 ---
 
