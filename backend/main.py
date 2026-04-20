@@ -3,6 +3,7 @@ import io
 import base64
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from pydantic import BaseModel
+import json
 from dotenv import load_dotenv
 import google.generativeai as genai
 from PIL import Image
@@ -11,6 +12,14 @@ load_dotenv()
 
 # Configure Gemini 1.5 Flash [cite: 314]
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+class PadiAnalysis(BaseModel):
+    is_crop_image: bool
+    disease_name: str
+    severity: str
+    confidence_score: float
+    action_plan: list[str]
+    malaysian_standard_reference: str
 
 # Define the Agent's Role (System Instruction) [cite: 313]
 SYSTEM_PROMPT = """
@@ -21,11 +30,17 @@ Your task is to analyze images of paddy crops (Padi).
 3. Create a 3-step 'Autonomous Action Plan' for the farmer.
 4. Align suggestions with Malaysian agricultural standards and SDGs[cite: 177, 251].
 Respond strictly in English[cite: 361].
+
+CRITICAL RULE: If the uploaded image does NOT contain a plant, leaf, or crop, set `is_crop_image` to false, set `disease_name` to "Non-Crop Image", set `severity` to "N/A", provide a polite rejection message in the first item of `action_plan` asking for a valid crop image, and set `confidence_score` to 1.0.
 """
 
 model = genai.GenerativeModel(
     model_name="gemini-3-flash-preview",
-    system_instruction=SYSTEM_PROMPT
+    system_instruction=SYSTEM_PROMPT,
+    generation_config={
+        "response_mime_type": "application/json",
+        "response_schema": PadiAnalysis,
+    }
 )
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -60,14 +75,15 @@ async def analyze_crop(file: UploadFile = File(...)):
         
         # Call Gemini [cite: 312, 314]
         response = model.generate_content([
-            "Analyze this crop image and provide the diagnosis and action plan.",
+            "Analyze this crop image and provide the diagnosis and action plan. Format your output strictly adhering to the JSON schema.",
             img
         ])
         
+        structured_data = json.loads(response.text)
+        
         return {
-            "track": "Padi & Plates (Agrotech)",
-            "analysis": response.text,
-            "status": "Success"
+            "status": "Success",
+            "data": structured_data
         }
     except Exception as e:
         return {"status": "Error", "message": str(e)}
@@ -85,14 +101,15 @@ async def analyze_base64_image(request: AnalyzeRequest):
         img = Image.open(io.BytesIO(image_bytes))
         
         response = model.generate_content([
-            request.prompt,
+            request.prompt + " Format your output strictly adhering to the JSON schema.",
             img
         ])
         
+        structured_data = json.loads(response.text)
+        
         return {
-            "track": "Padi & Plates (Agrotech)",
-            "analysis": response.text,
-            "status": "Success"
+            "status": "Success",
+            "data": structured_data
         }
     except Exception as e:
         return {"status": "Error", "message": str(e)}

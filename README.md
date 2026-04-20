@@ -60,3 +60,6 @@ Our API interacts with Gemini not just as a chatbot, but as an **Autonomous Agro
 - The model must identify the disease.
 - Evaluate and classify the severity level.
 - Generate a strict **3-step actionable remedy plan** that complies with local **Malaysian agricultural and safety standards**.
+
+### Pydantic Schema Enforcement
+To ensure high-fidelity data transfer and zero-hallucination API outputs, we utilize **Pydantic** for rigorous Schema Enforcement. The Gemini API is programmatically constrained (`response_mime_type="application/json"`) to map its output identically to a predefined Backend Data Model, guaranteeing a rock-solid, professional-level interface and minimizing parsing bugs across the stack.

@@ -224,8 +224,16 @@
                 const data = await response.json();
                 
                 if (data.status === 'Success') {
-                    // Update content and display markdown correctly
-                    contentState.innerHTML = marked.parse(data.analysis);
+                    // Reconstruct markdown from structured JSON data to retain UI compatibility
+                    const sd = data.data;
+                    if (sd.is_crop_image === false) {
+                        const errorMarkdown = `### 🚫 Not a Crop Image\n\n**AI Agent Message:**\n${sd.action_plan[0] || 'Please upload a valid Padi leaf or crop image for analysis.'}`;
+                        contentState.innerHTML = marked.parse(errorMarkdown);
+                    } else {
+                        const confidence = (sd.confidence_score * 100).toFixed(1);
+                        const formattedMarkdown = `### ${sd.disease_name}\n**Severity:** ${sd.severity} | **Confidence:** ${confidence}%\n\n**Action Plan:**\n${sd.action_plan.map(step => '- ' + step).join('\n')}\n\n**Reference:** *${sd.malaysian_standard_reference}*`;
+                        contentState.innerHTML = marked.parse(formattedMarkdown);
+                    }
                 } else {
                     contentState.innerHTML = `<div class="text-red-400 bg-red-400/10 p-4 rounded-lg border border-red-400/20"><strong>Error:</strong> ${data.message}</div>`;
                 }
