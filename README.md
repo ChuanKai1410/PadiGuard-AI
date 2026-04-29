@@ -16,15 +16,15 @@ This project natively integrates **Google Gemini 3 Flash** for rapid computer vi
 
 ## 🎥 Demo & System Overview
 ### 📌 Live Demo
-![PadiGuard Demo](images/demo.gif)
+![PadiGuard Demo](demo/padiguardaivideo.gif))
 
 ### 🏗️ System Architecture
-![System Architecture](images/PadiGuardAI-SystemArchitecture.png)
+![System Architecture](demo/PadiGuardAI-SystemArchitecture.png)
 
 ### 📱 UI Preview
-![System Screenshot](images/Uploading.png)
-![](images/Processing.png) 
-![](images/Resulting.png)
+![System Screenshot](demo/Uploading.png)
+![](demo/Processing.png) 
+![](demo/Resulting.png)
 
 ## 🧠 Technical Execution & Key Features
 ### 🌱 AI Crop Disease Detection
