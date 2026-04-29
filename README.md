@@ -1,7 +1,9 @@
 # 🌾 PadiGuard AI
 > **Project 2030 MyAI Future Hackathon** | **Track 1: Padi & Plates (Agrotech & Food Security)**
 
-PadiGuard AI is an intelligent, low-latency diagnostic tool designed for Malaysian farmers. By leveraging cutting-edge Agentic AI, it provides near-instant crop disease identification and localized, actionable remedy plans to safeguard crop yields and promote food security.
+PadiGuard AI is an intelligent, low-latency crop disease diagnosis system designed for Malaysian farmers, enabling instant plant health detection and localized remedy suggestions using Agentic AI.
+
+It aims to improve food security, reduce crop loss, and empower farmers with AI-driven decision support.
 
 🔗 **Live Deployment:** [https://padiguard-service-459297489399.asia-southeast1.run.app/](https://padiguard-service-459297489399.asia-southeast1.run.app/)
 
@@ -10,11 +12,46 @@ PadiGuard AI is an intelligent, low-latency diagnostic tool designed for Malaysi
 ## 🤖 AI Disclosure
 This project natively integrates **Google Gemini 3 Flash** for rapid computer vision and diagnostic reasoning. Model behavior is sculpted using **Google AI Studio** for precise prompt engineering and structured agentic outputs.
 
+---
+
+## 🎥 Demo & System Overview
+### 📌 Live Demo
+![PadiGuard Demo](images/demo.gif)
+
+### 🏗️ System Architecture
+![System Architecture](images/PadiGuardAI-SystemArchitecture.png)
+
+### 📱 UI Preview
+![System Screenshot](images/Uploading.png)
+![](images/Processing.png) 
+![](images/Resulting.png)
+
+## 🧠 Technical Execution & Key Features
+### 🌱 AI Crop Disease Detection
+- Powered by Google Gemini 3 Flash
+- Image-based plant disease classification
+- Structured diagnostic output (no hallucination via schema enforcement)
+
+### ⚡ Fast Image Optimization Pipeline
+- OpenCV preprocessing (resize, denoise, CLAHE, sharpening)
+- Reduced latency & API cost
+- Enhanced feature visibility for leaf analysis
+
+### 🌐 Multilingual AI (EN / BM / 中文)
+- Dynamic language switching
+- Backend prompt adapts to user language
+- Farmer-friendly localized responses
+
+### 🛡️ Agentic AI Safety Layer
+- Strict JSON schema via Pydantic
+- Rejects invalid/non-plant images
+- Guided input system to improve prediction accuracy
+
 ## 🛠 Tech Stack
 - **AI Engine:** Google Gemini 3 Flash API
-- **Backend:** FastAPI (Python), Uvicorn, Pydantic, OpenCV, NumPy
+- **Backend:** FastAPI, Uvicorn, Pydantic, OpenCV, NumPy
 - **Frontend:** HTML5, Tailwind CSS, Vanilla JS, marked.js
-- **Deployment:** Google Cloud Run (via Google Cloud Shell)
+- **Deployment:** Google Cloud Run
 
 ---
 
@@ -52,24 +89,8 @@ This project natively integrates **Google Gemini 3 Flash** for rapid computer vi
 
 ---
 
-## 🧠 Technical Execution & Key Features
-
-### ✨ Computer Vision Preprocessing (OpenCV)
-To minimize API latency and maximize diagnostic accuracy, raw images undergo extreme optimization before hitting the cloud:
-1. **Smart Resizing:** Large mobile photos are instantly scaled down to a maximum side of 1024px while retaining aspect ratio, massively reducing payload transit time and token costs.
-2. **Denoising:** `fastNlMeansDenoisingColored` removes graininess common in low-light field imagery.
-3. **CLAHE Contrast Mapping:** Exposes subtle lesion boundaries and leaf discoloration algorithms might otherwise miss.
-4. **Sharpening:** A 3x3 convolution kernel extracts harsh edges of pest damages and necrotic spots.
-
-### 🌐 Instant Multi-Language Support (i18n)
-PadiGuard boasts full interface internationalization for **English, Bahasa Malaysia, and Mandarin Chinese**. Upon selecting a language, the UI changes instantly, and the dynamic backend prompt inherits the language context—commanding the Gemini agent to autonomously generate its complex diagnostic response entirely in the farmer's native language. 
-
-### 🛡️ Rigid Agentic Workflows & Schema Enforcement
-Our API interacts with Gemini not as a chatbot, but as an **Autonomous Agrotech Expert**. 
-- Using **Pydantic**, the Gemini 3 Flash model is strictly constrained (`response_mime_type="application/json"`) to map its output to our exact `PadiAnalysis` schema schema—effectively eliminating arbitrary hallucinations.
-- Diagnoses natively include strict **3-step autonomous action plans** aligned with **Malaysian agricultural safety standards and SDGs**.
-
-### 🛑 Intelligent Error Handling & Guardrails
-- **Non-Crop & Wide Shot Rejection:** The model is armed with critical rules to detect non-plant imagery or sweeping wide shots of entire fields. It politely rejects these images and instructs the farmer to take a close-up photo of the single affected leaf.
-- **Guided Farmer Inputs:** Instead of vague text boxes, farmers input context through specific, localized dropdown menus (Symptom, Duration), guiding the model towards an accurate conclusion.
-- **Frontend AbortControllers:** The UI enforces a strict 30-second client-side timeout. If field internet is too slow, it gracefully aborts and prompts the user to retake the photo rather than hanging indefinitely.
+## 🧩 Project Impact
+PadiGuard AI demonstrates how Agentic AI + Computer Vision + Edge Optimization can be applied in agriculture to:
+- Reduce crop disease detection time
+- Improve farming decision accuracy
+- Support Malaysia’s agricultural digital transformation
